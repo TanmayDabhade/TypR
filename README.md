@@ -1,3 +1,13 @@
+# Typer
+
+Accelerate your coding speed with **Typer**, a tool designed to enhance typing speed, and a fun way of challenging yourself.
+
+
+## Using TypR
+
+Check out TypR on [TypR](vercel.com)
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
