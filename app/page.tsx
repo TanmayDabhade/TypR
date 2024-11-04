@@ -252,7 +252,7 @@ export default function TypingTest() {
   return (
     <div className="container mx-auto p-4 flex flex-col items-center justify-center h-screen">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl m-12">
-      Typer: Accelerate Your Coding
+      TypR: Accelerate Your Coding
     </h1>
       <Card className="mb-4">
         <CardHeader>
