@@ -274,14 +274,15 @@ export default function TypingTest() {
         <Button
           variant="ghost"
           onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-          className="ml-4 border-2"
+          className="ml-4 transition-colors duration-300"
         >
           {theme === 'light' ? (
-            <Sun className="w-6 h-6" />
+            <Sun className="w-6 h-6 animate-spin" />
           ) : (
-            <Moon className="w-6 h-6" />
+            <Moon className="w-6 h-6 animate-spin" />
           )}
         </Button>
+
       </div>
       <Card className="w-full max-w-2xl">
         <CardHeader>
