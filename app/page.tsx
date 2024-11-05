@@ -1,9 +1,16 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Sun, Moon } from 'lucide-react'; // Import ico
 
 const languages: { [key: string]: string } = {
   javascript: `function quickSort(arr) {
@@ -126,96 +133,106 @@ func quickSort(arr []int) []int {
 };
 
 
-export default function TypingTest() {
-  const [language, setLanguage] = useState<string>('javascript')
-  const [currentIndex, setCurrentIndex] = useState<number>(0)
-  const [startTime, setStartTime] = useState<number | null>(null)
-  const [endTime, setEndTime] = useState<number | null>(null)
-  const [wpm, setWpm] = useState<number>(0)
-  const [mistakes, setMistakes] = useState<number>(0)
-  const containerRef = useRef<HTMLDivElement>(null)
 
-  const codeToType = languages[language]
+export default function TypingTest() {
+  const [language, setLanguage] = useState<string>('javascript');
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [endTime, setEndTime] = useState<number | null>(null);
+  const [wpm, setWpm] = useState<number>(0);
+  const [mistakes, setMistakes] = useState<number>(0);
+  const [theme, setTheme] = useState<string>('light'); // State variable for theme
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const codeToType = languages[language];
+
+  // Apply theme class to document element
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   useEffect(() => {
     if (currentIndex === codeToType.length) {
       if (!endTime) {
-        setEndTime(Date.now())
+        setEndTime(Date.now());
       }
     } else if (currentIndex > 0 && !startTime) {
-      setStartTime(Date.now())
+      setStartTime(Date.now());
     }
-  }, [currentIndex, codeToType.length, startTime, endTime])
+  }, [currentIndex, codeToType.length, startTime, endTime]);
 
   useEffect(() => {
     if (startTime && endTime) {
-      const timeInMinutes = (endTime - startTime) / 60000
-      const wordsTyped = codeToType.trim().split(/\s+/).length
-      setWpm(Math.round(wordsTyped / timeInMinutes))
+      const timeInMinutes = (endTime - startTime) / 60000;
+      const wordsTyped = codeToType.trim().split(/\s+/).length;
+      setWpm(Math.round(wordsTyped / timeInMinutes));
     }
-  }, [startTime, endTime, codeToType])
+  }, [startTime, endTime, codeToType]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const currentChar = codeToType[currentIndex]
+      const currentChar = codeToType[currentIndex];
 
       if (!startTime && currentIndex === 0) {
-        setStartTime(Date.now())
+        setStartTime(Date.now());
       }
 
       if (e.key === 'Tab') {
-        e.preventDefault() // Prevent focus change
+        e.preventDefault();
         if (currentChar === '\t') {
-          setCurrentIndex(prev => prev + 1)
+          setCurrentIndex((prev) => prev + 1);
         } else {
-          setMistakes(prev => prev + 1)
+          setMistakes((prev) => prev + 1);
         }
       } else if (e.key === 'Enter') {
-        e.preventDefault() // Prevent default behavior like form submission
+        e.preventDefault();
         if (currentChar === '\n') {
-          setCurrentIndex(prev => prev + 1)
+          setCurrentIndex((prev) => prev + 1);
         } else {
-          setMistakes(prev => prev + 1)
+          setMistakes((prev) => prev + 1);
         }
       } else if (e.key === currentChar) {
-        setCurrentIndex(prev => prev + 1)
+        setCurrentIndex((prev) => prev + 1);
       } else if (e.key.length === 1) {
-        setMistakes(prev => prev + 1)
+        setMistakes((prev) => prev + 1);
       }
-    }
+    };
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentIndex, codeToType, startTime])
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, codeToType, startTime]);
 
   const handleReset = () => {
-    setCurrentIndex(0)
-    setStartTime(null)
-    setEndTime(null)
-    setWpm(0)
-    setMistakes(0)
-    containerRef.current?.focus()
-  }
+    setCurrentIndex(0);
+    setStartTime(null);
+    setEndTime(null);
+    setWpm(0);
+    setMistakes(0);
+    containerRef.current?.focus();
+  };
 
   const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage)
-    handleReset()
-  }
+    setLanguage(newLanguage);
+    handleReset();
+  };
 
   const renderCode = () => {
     return codeToType.split('').map((char, index) => {
-      let className = 'font-mono '
+      let className = 'font-mono ';
       if (index < currentIndex) {
-        className += 'text-primary '
+        className += 'text-primary ';
       } else if (index === currentIndex) {
-        className += 'bg-primary/20 text-primary '
+        className += 'bg-primary/20 text-primary ';
       } else {
-        className += 'text-muted-foreground '
+        className += 'text-muted-foreground ';
       }
 
       if (char === '\n') {
         if (index === currentIndex) {
-          // Render a visible span for the current newline character
           return (
             <span
               key={index}
@@ -228,35 +245,47 @@ export default function TypingTest() {
             >
               {'\u00A0'}
             </span>
-          )
+          );
         } else {
-          // For other newline characters, render a line break
-          return <br key={index} />
+          return <br key={index} />;
         }
       } else if (char === '\t') {
         return (
           <span key={index} className={className}>
             {'\u00A0\u00A0\u00A0\u00A0'}
           </span>
-        )
+        );
       } else {
         return (
           <span key={index} className={className}>
             {char}
           </span>
-        )
+        );
       }
-    })
-  }
+    });
+  };
 
   return (
     <div className="container mx-auto p-4 flex flex-col items-center justify-center h-screen">
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl m-12">
-      TypR: Accelerate Your Coding
-    </h1>
-      <Card className="mb-4">
+      <div className="flex items-center justify-between w-full max-w-2xl mb-4">
+        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
+          TypeR: Accelerate Your Coding
+        </h1>
+        <Button
+          variant="ghost"
+          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          className="ml-4 border-2"
+        >
+          {theme === 'light' ? (
+            <Sun className="w-6 h-6" />
+          ) : (
+            <Moon className="w-6 h-6" />
+          )}
+        </Button>
+      </div>
+      <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle>Programmer Typing Test</CardTitle>
+          <CardTitle>Programmer Typing Speed Test</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="mb-4">
@@ -289,16 +318,12 @@ export default function TypingTest() {
           <div className="flex justify-between items-center">
             <div className="space-x-4">
               <Button onClick={handleReset}>Reset</Button>
-              <span className="text-sm text-muted-foreground">
-                Mistakes: {mistakes}
-              </span>
+              <span className="text-sm text-muted-foreground">Mistakes: {mistakes}</span>
             </div>
-            <div className="text-xl font-bold">
-              {wpm > 0 ? `${wpm} WPM` : 'Start typing...'}
-            </div>
+            <div className="text-xl font-bold">{wpm > 0 ? `${wpm} WPM` : ''}</div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
